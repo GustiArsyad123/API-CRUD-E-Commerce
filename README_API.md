@@ -55,3 +55,22 @@ Catatan
 
 - Untuk produksi gunakan migration dan sebaiknya jangan gunakan `sync({ force: true })`.
 - Password disimpan plain-text pada contoh ini — untuk implementasi asli silakan tambahkan hashing (bcrypt) dan autentikasi.
+
+Note:
+npm run dev
+
+> ecommerce-api@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+Failed to start server: AccessDeniedError [SequelizeAccessDeniedError]: Access denied for user 'arsyad'@'localhost' (using password: YES)
+
+sudo mysql << 'EOF'
+heredoc> DROP USER IF EXISTS 'arsyad'@'localhost';
+heredoc> CREATE USER 'arsyad'@'localhost' IDENTIFIED BY 'Ecommerce@2024';
+heredoc> GRANT ALL PRIVILEGES ON ecommerce_db.* TO 'arsyad'@'localhost';
+heredoc> FLUSH PRIVILEGES;
