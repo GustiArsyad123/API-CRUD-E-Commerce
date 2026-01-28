@@ -1,4 +1,8 @@
 const { User } = require('../models');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 exports.login = async (req, res) => {
   try {
@@ -20,13 +24,21 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Return user data (without password)
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET || 'default_secret',
+      { expiresIn: '24h' }
+    );
+
+    // Return user data (without password) and token
     const userData = user.toJSON();
     delete userData.password;
     
     res.json({
       success: true,
       message: 'Login successful',
+      token,
       user: userData,
     });
   } catch (err) {
